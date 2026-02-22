@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CYX GUI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>CYX Task Board</h1>
+    <p class="subtitle">A lightweight GUI you can open in any browser.</p>
+
+    <section class="card">
+      <label for="taskInput">New task</label>
+      <div class="row">
+        <input id="taskInput" type="text" placeholder="Type a task..." />
+        <button id="addBtn" type="button">Add</button>
+      </div>
+      <p id="error" class="error" aria-live="polite"></p>
+    </section>
+
+    <section class="card">
+      <h2>Tasks</h2>
+      <ul id="taskList"></ul>
+      <p id="emptyState" class="muted">No tasks yet.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
