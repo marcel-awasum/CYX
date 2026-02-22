@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization { id String @id @default(cuid()) name String type String users User[] }
+model User { id String @id @default(cuid()) email String @unique passwordHash String role String organizationId String organization Organization @relation(fields:[organizationId], references:[id]) }
+model BankProfile { id String @id @default(cuid()) organizationId String @unique jurisdiction String regulator String ownership String financials Json }
+model InvestorProfile { id String @id @default(cuid()) organizationId String @unique strategy String aum Float }
+model OriginatorProfile { id String @id @default(cuid()) organizationId String @unique focus String }
+model KycCase { id String @id @default(cuid()) organizationId String status String type String createdAt DateTime @default(now()) }
+model KycDocument { id String @id @default(cuid()) kycCaseId String fileKey String version Int @default(1) }
+model KycDecision { id String @id @default(cuid()) kycCaseId String decision String notes String? madeBy String createdAt DateTime @default(now()) }
+model RiskModel { id String @id @default(cuid()) name String }
+model RiskModelVersion { id String @id @default(cuid()) riskModelId String weights Json effectiveDate DateTime }
+model RiskScore { id String @id @default(cuid()) organizationId String score Float tier Int confidence String rationale Json createdAt DateTime @default(now()) }
+model WatchlistEvent { id String @id @default(cuid()) organizationId String eventType String severity String payload Json createdAt DateTime @default(now()) }
+model PricingBand { id String @id @default(cuid()) name String effectiveDate DateTime }
+model PricingBandVersion { id String @id @default(cuid()) pricingBandId String definition Json approved Bool @default(false) }
+model Mandate { id String @id @default(cuid()) investorOrgId String status String targetTiers Int[] maxTenor Int minYield Float }
+model MandateConstraint { id String @id @default(cuid()) mandateId String key String value Json }
+model CapitalRequest { id String @id @default(cuid()) bankOrgId String amount Float tenor Int instrumentType String status String }
+model Allocation { id String @id @default(cuid()) capitalRequestId String investorOrgId String amount Float rate Float status String }
+model Exposure { id String @id @default(cuid()) allocationId String outstanding Float status String startedAt DateTime }
+model Covenant { id String @id @default(cuid()) exposureId String rule String threshold Float }
+model CovenantCheck { id String @id @default(cuid()) covenantId String actual Float passed Bool checkedAt DateTime @default(now()) }
+model MonitoringTask { id String @id @default(cuid()) exposureId String taskType String dueAt DateTime status String }
+model Alert { id String @id @default(cuid()) organizationId String type String severity String payload Json status String }
+model Deal { id String @id @default(cuid()) originatorOrgId String jurisdiction String tenor Int size Float status String }
+model DealCashflow { id String @id @default(cuid()) dealId String period Int amount Float }
+model DealDocument { id String @id @default(cuid()) dealId String fileKey String version Int @default(1) }
+model IOI { id String @id @default(cuid()) dealId String investorOrgId String amount Float status String }
+model DealAllocation { id String @id @default(cuid()) dealId String investorOrgId String amount Float status String }
+model DealStatusHistory { id String @id @default(cuid()) dealId String status String at DateTime @default(now()) }
+model FeeSchedule { id String @id @default(cuid()) name String feeType String effectiveDate DateTime }
+model FeeScheduleVersion { id String @id @default(cuid()) feeScheduleId String definition Json approved Bool @default(false) }
+model Invoice { id String @id @default(cuid()) organizationId String reference String status String currency String total Float createdAt DateTime @default(now()) }
+model InvoiceLineItem { id String @id @default(cuid()) invoiceId String description String amount Float }
+model LedgerEntry { id String @id @default(cuid()) organizationId String entryType String amount Float currency String reference String createdAt DateTime @default(now()) }
+model AuditEvent { id String @id @default(cuid()) actorId String action String entityType String entityId String payload Json createdAt DateTime @default(now()) previousHash String? hash String }

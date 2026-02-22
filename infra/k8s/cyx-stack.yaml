@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: cyx-api }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: cyx-api } }
+  template:
+    metadata: { labels: { app: cyx-api } }
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/example/cyx-api:latest
+          ports: [{ containerPort: 3001 }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: cyx-api }
+spec:
+  selector: { app: cyx-api }
+  ports: [{ port: 80, targetPort: 3001 }]
